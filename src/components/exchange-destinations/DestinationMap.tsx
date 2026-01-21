@@ -87,7 +87,7 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
   });
 
   return (
-    <div className="relative w-full rounded-lg overflow-hidden shadow-lg p-2">
+    <div className="relative w-full rounded-lg overflow-hidden shadow-lg">
       {/* Program filter dropdown */}
       <div className="mb-4">
         <label htmlFor="program-filter" className="sr-only">
@@ -111,16 +111,19 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
       </div>
 
       {/* Map */}
-      <div className="w-full h-[400px] relative">
+      <div className="relative w-full h-[420px] rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5">
+        {/* Subtle gradient overlay */}
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+
         <MapContainer
           center={defaultCenter}
           zoom={4}
           scrollWheelZoom={true}
-          className="w-full h-full"
+          className="w-full h-full rounded-2xl"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             subdomains={["a", "b", "c", "d"]}
             maxZoom={20}
           />
@@ -141,54 +144,63 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
         </MapContainer>
 
         {/* Searchbar overlay */}
-        <div className="absolute top-2 right-2 z-10 bg-white bg-opacity-90 rounded shadow-md">
+        <div className="absolute top-4 right-4 z-20 backdrop-blur-md bg-white/80 rounded-xl shadow-lg border border-white/30">
           <MapSearchbar onSearch={(query) => setSearchTerm(query)} />
         </div>
 
+        {/* Modal */}
         {selectedCountry && (
-          <div className="fixed top-1/6 left-1/2 -translate-x-1/2 z-50 bg-white rounded-xl shadow-2xl w-[90%] max-w-3xl max-h-[80%] overflow-y-auto p-4">
-            <button
-              onClick={() => setSelectedCountry(null)}
-              className="absolute top-4 right-4 px-3 py-1 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-600"
-            >
-              ✕
-            </button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="relative bg-white rounded-2xl shadow-2xl w-[90%] max-w-3xl max-h-[85%] overflow-y-auto p-6">
+              <button
+                onClick={() => setSelectedCountry(null)}
+                className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-black/80 text-white hover:bg-black transition"
+              >
+                ✕
+              </button>
 
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              {selectedCountry.country}
-            </h2>
+              <h2 className="text-2xl font-bold mb-6 text-center">
+                {selectedCountry.country}
+              </h2>
 
-            <ul className="space-y-4">
-              {selectedCountry.universities.map((uni, index) => (
-                <li key={index} className="border-b pb-4">
-                  <section className="my-2 px-1">
-                    <h3 className="font-semibold">{uni.title}</h3>
-                    <p className="">{uni.program}</p>
-                    {uni.studyField &&
-                      uni.studyField !== uni.title &&
-                      uni.studyField !== uni.program &&
-                      uni.studyField !== selectedCountry.country && (
-                        <span className="text-sm text-gray-600">
-                          {uni.studyField}
-                        </span>
+              <ul className="space-y-4">
+                {selectedCountry.universities.map((uni, index) => (
+                  <li
+                    key={index}
+                    className="rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition bg-gray-50/50"
+                  >
+                    <section className="my-2 px-1">
+                      <h3 className="font-semibold text-lg">{uni.title}</h3>
+                      <p className="text-gray-700">{uni.program}</p>
+
+                      {uni.studyField &&
+                        uni.studyField !== uni.title &&
+                        uni.studyField !== uni.program &&
+                        uni.studyField !== selectedCountry.country && (
+                          <span className="text-sm text-gray-500">
+                            {uni.studyField}
+                          </span>
+                        )}
+                    </section>
+
+                    <section className="flex flex-row gap-2 items-center justify-between mt-6">
+                      {uni.link && (
+                        <a
+                          href={uni.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block px-4 py-2 bg-[#FF5000] text-white rounded-lg shadow hover:bg-[#e04e00] transition"
+                        >
+                          Vieraile verkkosivulla
+                        </a>
                       )}
-                  </section>
-                  <section className="flex flex-row gap-2 items-start justify-between mt-6 ">
-                    {uni.link && (
-                      <a
-                        href={uni.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block px-4 py-2 bg-[#FF5000] text-white rounded-lg shadow hover:bg-[#e04e00]"
-                      >
-                        Vieraile verkkosivulla
-                      </a>
-                    )}
-                    <FavoriteButton destinationName={uni.title} />
-                  </section>
-                </li>
-              ))}
-            </ul>
+
+                      <FavoriteButton destinationName={uni.title} />
+                    </section>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
       </div>
