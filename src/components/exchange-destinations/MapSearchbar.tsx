@@ -46,12 +46,12 @@ const MapSearchbar: React.FC<MapSearchbarProps> = ({ onSearch }) => {
         onChange={(e) => setQuery(e.target.value)} 
         className="flex-grow px-3 py-2 rounded-l-lg outline-none"
       />
-      <button
+      {/* <button
         type="submit"
         className="px-4 py-2 bg-[#FF5000] text-white rounded-r-lg hover:bg-orange-600 transition"
       >
         {translations[language]?.search || "Search"}
-      </button>
+      </button> */}
     </form>
   );
 };

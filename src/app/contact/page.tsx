@@ -11,10 +11,10 @@ import ContactForm from "@/components/contact-information/ContactForm"
 const ContactPage: React.FC = () => {
   const { language } = useLanguage();
   const { user, loading: authLoading, isAuthenticated } = useAuth();
-  const { getContacts, addContact, deleteContact, loading, error } = useAdminContacts();
+  const { getContacts, addContact, deleteContact, reorderContacts, loading, error } = useAdminContacts();
 
   const [contacts, setContacts] = useState<
-    { _id: string; name: string; title: string; email: string }[]
+    { _id: string; name: string; title: string; email: string, avatarUrl?: string }[]
   >([]);
 
   const [newContact, setNewContact] = useState({ name: "", title: "", email: "" });
@@ -29,6 +29,7 @@ const ContactPage: React.FC = () => {
     const fetchContacts = async () => {
       try {
         const res = await getContacts();
+        console.log("Fetched contacts:", res);
         if (res && "contacts" in res) setContacts(res.contacts);
       } catch (err) {
         console.error("Error loading contacts:", err);
@@ -53,6 +54,17 @@ const ContactPage: React.FC = () => {
     }
   };
 
+  const handleReorderContacts = async (reordered: typeof contacts) => {
+    setContacts(reordered);
+  
+    try {
+      await reorderContacts(reordered.map((c) => c._id));
+    } catch (err) {
+      console.error("Failed to save new order:", err);
+    }
+  };
+  
+
   const handleRemoveContact = async (id: string) => {
     if (!window.confirm(t.confirmRemove)) return;
     try {
@@ -68,11 +80,13 @@ const ContactPage: React.FC = () => {
   return (
     <div className="p-6 max-w-2xl mx-auto mt-6 text-[var(--typography)]">
       <h2 className="text-2xl font-semibold text-center mb-6">{t.title}</h2>
+      {isAdmin && <p className="text-center mb-4 italic">{t.adminCanDrag}</p>}
 
       {loading && <p className="text-center text-[var(--typography)]">{t.loading}</p>}
       {error && <p className="text-center text-red-500">{t.error}</p>}
 
       <ContactList
+        onReorder={isAdmin ? handleReorderContacts : undefined}
         contacts={contacts}
         isAdmin={isAdmin || false}
         onRemove={handleRemoveContact}

@@ -6,7 +6,7 @@ import { DefaultIcon } from "../../../leafletConfig";
 import MapSearchbar from "./MapSearchbar";
 import { useLanguage } from "@/context/LanguageContext";
 import FavoriteButton from "../ui/FavoriteButton";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/destination-hooks/useFavorites";
 
 interface DestinationMapProps {
   data: DestinationWithCoordinatesResponse;
@@ -181,7 +181,7 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
           className="w-full h-full rounded-2xl"
         >
           <TileLayer
-            attribution='&copy; OpenStreetMap & CARTO'
+            attribution="&copy; OpenStreetMap & CARTO"
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             subdomains={["a", "b", "c", "d"]}
             maxZoom={20}

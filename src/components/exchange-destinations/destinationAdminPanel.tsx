@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useDestinationUrls } from "@/hooks/destinationUrlHooks";
+import { useDestinationUrls } from "@/hooks/destination-hooks/destinationUrlHooks";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface DestinationAdminPanelProps {

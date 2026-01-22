@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { FaTrash } from "react-icons/fa";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import LoadingSpinner from "@/components/profile/LoadingSpinner";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/destination-hooks/useFavorites";
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations/favorites";
@@ -20,7 +20,6 @@ export default function FavoritesPage() {
   const [removing, setRemoving] = useState<string | null>(null);
 
   const isLoading = favoritesLoading;
-
 
   const handleRemoveFavorite = async (destination: string) => {
     setRemoving(destination);

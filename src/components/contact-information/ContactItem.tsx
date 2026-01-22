@@ -1,7 +1,8 @@
+import Image from "next/image";
 import React from "react";
 
 interface ContactItemProps {
-  contact: { _id: string; name: string; title: string; email: string };
+  contact: { _id: string; name: string; title: string; email: string, avatarUrl?: string };
   isAdmin: boolean;
   onRemove: (id: string) => void;
   t: Record<string, string>;
@@ -9,7 +10,7 @@ interface ContactItemProps {
 
 const ContactItem: React.FC<ContactItemProps> = ({ contact, isAdmin, onRemove, t }) => {
   return (
-    <li className="flex justify-between items-center border border-gray-300 rounded-xl p-4">
+    <li className="flex justify-between items-center border border-gray-300 rounded-xl p-4 mb-4">
       <div>
         <p className="font-medium">{contact.name}</p>
         <p className="text-sm italic text-[var(--typography)]">{contact.title}</p>
@@ -17,13 +18,26 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, isAdmin, onRemove, t
           {contact.email}
         </a>
       </div>
-      {isAdmin && (
-        <button onClick={() => onRemove(contact._id)} className="text-red-600 hover:underline">
-          {t.remove}
-        </button>
-      )}
+      <div className="flex flex-col items-center gap-2">
+        <Image
+          src={contact.avatarUrl || '/images/default-avatar.png'}
+          alt={`${contact.name} avatar`}
+          width={75}
+          height={75}
+          className="rounded-full"
+        />
+        {isAdmin && (
+          <button
+            onClick={() => onRemove(contact._id)}
+            className="text-red-600 hover:underline"
+          >
+            {t.remove}
+          </button>
+        )}
+      </div>
     </li>
   );
 };
+
 
 export default ContactItem;

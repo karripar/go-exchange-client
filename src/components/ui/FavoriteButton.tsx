@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/destination-hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { DestinationUrlResponse } from "@/hooks/destinationUrlHooks";
+import { DestinationUrlResponse } from "@/hooks/destination-hooks/destinationUrlHooks";
 import Image from "next/image";
 import { FiExternalLink } from "react-icons/fi";
 import { useLanguage } from "@/context/LanguageContext";

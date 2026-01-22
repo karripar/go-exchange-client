@@ -120,10 +120,42 @@ const useAdminContacts = () => {
     }
   };
 
+  const reorderContacts = async (orderedIds: string[]) => {
+    setLoading(true);
+    setError(null);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("No auth token found");
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await fetchData<{ success: boolean; message: string }>(
+        `${API_URL}/contact/contacts/reorder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ orderedIds }),
+        }
+      );
+      return response;
+    } catch (err: unknown) {
+      console.error("Error reordering contacts:", err);
+      setError("Failed to reorder contacts");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     getContacts,
     addContact,
     deleteContact,
+    reorderContacts,
     loading,
     error,
   };

@@ -10,6 +10,7 @@ export const translations: Record<string, Record<string, string>> = {
       confirmRemove: "Are you sure you want to delete this contact?",
       loading: "Loading...",
       error: "Failed to fetch contacts",
+      adminCanDrag: "Admins can drag and reorder contacts. Grab and move the contact items to change their order.",
     },
     fi: {
       title: "Ylläpitäjien yhteystiedot",
@@ -22,6 +23,7 @@ export const translations: Record<string, Record<string, string>> = {
       confirmRemove: "Haluatko varmasti poistaa tämän yhteystiedon?",
       loading: "Ladataan...",
       error: "Tietojen haku epäonnistui",
+      adminCanDrag: "Ylläpitäjät voivat vetää ja järjestää yhteystietoja uudelleen. Ota kiinni ja siirrä yhteystietokortteja muuttaaksesi niiden järjestystä.",
     },
   };
   
