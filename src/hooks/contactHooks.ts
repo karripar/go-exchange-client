@@ -18,6 +18,7 @@ export interface AdminContactResponse extends AdminContactInput {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  position?: number;
 }
 
 // Hook to manage admin contact information

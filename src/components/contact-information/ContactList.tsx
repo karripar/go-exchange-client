@@ -8,6 +8,7 @@ interface Contact {
   title: string;
   email: string;
   avatarUrl?: string;
+  position: number;
 }
 
 interface ContactListProps {
@@ -74,7 +75,7 @@ const ContactList: React.FC<ContactListProps> = ({
                     } rounded transition`}
                   >
                     <ContactItem
-                      contact={contact}
+                      contact={{...contact, position: index + 1}}
                       isAdmin={isAdmin}
                       onRemove={onRemove}
                       t={t}

@@ -14,7 +14,7 @@ const ContactPage: React.FC = () => {
   const { getContacts, addContact, deleteContact, reorderContacts, loading, error } = useAdminContacts();
 
   const [contacts, setContacts] = useState<
-    { _id: string; name: string; title: string; email: string, avatarUrl?: string }[]
+    { _id: string; name: string; title: string; email: string, avatarUrl?: string, position?: number }[]
   >([]);
 
   const [newContact, setNewContact] = useState({ name: "", title: "", email: "" });
@@ -85,15 +85,8 @@ const ContactPage: React.FC = () => {
       {loading && <p className="text-center text-[var(--typography)]">{t.loading}</p>}
       {error && <p className="text-center text-red-500">{t.error}</p>}
 
-      <ContactList
-        onReorder={isAdmin ? handleReorderContacts : undefined}
-        contacts={contacts}
-        isAdmin={isAdmin || false}
-        onRemove={handleRemoveContact}
-        t={t}
-      />
-
       {isAdmin && (
+        <div className="mb-8">
         <ContactForm
           newContact={newContact}
           setNewContact={setNewContact}
@@ -101,7 +94,17 @@ const ContactPage: React.FC = () => {
           loading={loading}
           t={t}
         />
+        </div>
       )}
+
+
+      <ContactList
+        onReorder={isAdmin ? handleReorderContacts : undefined}
+        contacts={contacts.map(contact => ({ ...contact, position: contact.position ?? 0 }))}
+        isAdmin={isAdmin || false}
+        onRemove={handleRemoveContact}
+        t={t}
+      />
     </div>
   );
 };
