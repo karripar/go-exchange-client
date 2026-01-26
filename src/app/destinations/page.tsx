@@ -81,6 +81,15 @@ const DestinationsPage = () => {
         {translations[language].partnerSchools}
       </h1>
 
+      <div className="mb-6 text-center">
+        <a
+          href="/partner-map"
+          className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm shadow-sm hover:bg-black/5"
+        >
+          Test: Partner schools map (MapLibre)
+        </a>
+      </div>
+
       {isAuthenticated && adminLevels.includes(Number(user?.user_level_id)) && <DestinationAdminPanel fetchError={error} />}
 
       {!error && destinationArray && (
