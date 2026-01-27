@@ -20,8 +20,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = (await req.json().catch(() => null)) as any;
-    if (body && body.limit != null) limit = Number(body.limit);
+    const body = (await req.json().catch(() => null)) as unknown;
+    if (body && typeof body === "object" && "limit" in body) {
+      const maybeLimit = (body as { limit?: unknown }).limit;
+      if (maybeLimit != null && maybeLimit !== "") limit = Number(maybeLimit);
+    }
   } catch {
     // ignore
   }

@@ -42,10 +42,10 @@ export async function runPartnerGeocode(jobId: string) {
 
   try {
     for (let i = 0; i < candidates.length; i += 1) {
-      const s = candidates[i] as any;
+      const s = candidates[i] as unknown as Record<string, unknown>;
       job.summary.processed += 1;
 
-      const schoolId = String(s._id);
+      const schoolId = String((s as { _id?: unknown })._id);
       const externalKey = typeof s.externalKey === "string" ? s.externalKey : undefined;
       const city = typeof s.city === "string" ? s.city : "";
       const country = typeof s.country === "string" ? s.country : "";
@@ -95,10 +95,11 @@ export async function runPartnerGeocode(jobId: string) {
     job.status = "succeeded";
     job.finishedAt = new Date();
     await job.save();
-  } catch (err: any) {
+  } catch (err: unknown) {
     job.status = "failed";
     job.finishedAt = new Date();
-    job.errorLog = String(err?.stack ?? err?.message ?? err);
+    const e = err as { stack?: unknown; message?: unknown };
+    job.errorLog = String(e?.stack ?? e?.message ?? err);
     if (rowErrors.length) job.set("rowErrors", rowErrors.slice(0, MAX_ROW_ERRORS));
     await job.save();
     throw err;

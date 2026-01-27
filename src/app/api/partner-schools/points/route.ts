@@ -46,7 +46,7 @@ export async function GET(req: Request) {
   const level = url.searchParams.get("level") || undefined;
   const q = url.searchParams.get("q") || undefined;
 
-  const query: any = {
+  const query: Record<string, unknown> = {
     location: { $geoWithin: { $geometry: bboxToPolygon(bbox) } },
   };
 
@@ -77,7 +77,7 @@ export async function GET(req: Request) {
     );
 
     if (groups.size > 0) {
-      const or: any[] = [];
+      const or: Record<string, unknown>[] = [];
       if (groups.has("erasmus")) {
         // Match plain Erasmus programmes (exclude bilateral hybrids).
         or.push({ mobilityProgrammes: { $regex: /\berasmus\b/i } });
@@ -100,7 +100,11 @@ export async function GET(req: Request) {
         });
       }
 
-      if (or.length > 0) query.$and = [...(query.$and ?? []), { $or: or }];
+      if (or.length > 0) {
+        const existingAnd = (query as { $and?: unknown }).$and;
+        const andArray = Array.isArray(existingAnd) ? existingAnd : [];
+        (query as { $and: unknown[] }).$and = [...andArray, { $or: or }];
+      }
     } else {
       // Backwards-compatible exact matching (old UI values).
       if (raw.length > 0) query.mobilityProgrammes = { $in: raw };

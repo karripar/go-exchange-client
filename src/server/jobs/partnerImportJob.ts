@@ -74,8 +74,9 @@ export async function runPartnerImport(importId: string) {
       // Soft fix: if agreementScope (Agreement applies to) is empty but the degree-programmes column
       // looks like it contains agreement/scope text, copy it to agreementScope WITHOUT removing it
       // from degreeProgrammesInAgreement.
-      const agreementScopeFromCsv = String((rawRows[i] as any)?.agreementScopeText ?? "").trim();
-      const degreeTextFromCsv = String((rawRows[i] as any)?.degreeProgrammeText ?? "").trim();
+      const rawRow = rawRows[i] as unknown as Record<string, unknown>;
+      const agreementScopeFromCsv = String(rawRow.agreementScopeText ?? "").trim();
+      const degreeTextFromCsv = String(rawRow.degreeProgrammeText ?? "").trim();
       const shouldCopyDegreeToAgreementScope =
         !normalized.agreementScope &&
         !agreementScopeFromCsv &&
@@ -118,7 +119,7 @@ export async function runPartnerImport(importId: string) {
 
       const existing = await PartnerSchool.findOne({ externalKey });
 
-      const update: any = {
+      const update: Record<string, unknown> = {
         externalKey,
         name: normalized.name,
         continent: normalized.continent,
@@ -244,10 +245,11 @@ export async function runPartnerImport(importId: string) {
     importDoc.status = "succeeded";
     importDoc.finishedAt = new Date();
     await importDoc.save();
-  } catch (err: any) {
+  } catch (err: unknown) {
     importDoc.status = "failed";
     importDoc.finishedAt = new Date();
-    importDoc.errorLog = String(err?.stack ?? err?.message ?? err);
+    const e = err as { stack?: unknown; message?: unknown };
+    importDoc.errorLog = String(e?.stack ?? e?.message ?? err);
     importDoc.summary.failedRows += rowErrors.length;
 
     const MAX_ROW_ERRORS = 200;

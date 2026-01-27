@@ -1,10 +1,11 @@
 import { GeocodeCache } from "../models/GeocodeCache";
 import { sleep } from "../utils/sleep";
+import { geocodeViaGoogle, type GoogleGeocodeResult } from "./geocodeCityGoogle";
 
 export type GeocodeResult = {
   lat: number;
   lon: number;
-  provider: "nominatim";
+  provider: "nominatim" | "google";
   query: string;
   displayName?: string;
   raw?: unknown;
@@ -94,7 +95,7 @@ async function geocodeViaNominatim(query: string): Promise<GeocodeResult | null>
   const q = clean(query);
   if (!q) return null;
 
-  const cached = await GeocodeCache.findOne({ query: q }).lean();
+  const cached = await GeocodeCache.findOne({ query: q, provider: "nominatim" }).lean();
   if (cached) {
     if (!cached.ok || !cached.result?.lat || !cached.result?.lon) return null;
     const displayName = typeof cached.result.displayName === "string" ? cached.result.displayName : undefined;
@@ -134,25 +135,26 @@ async function geocodeViaNominatim(query: string): Promise<GeocodeResult | null>
     rateState.lastAt = Date.now();
 
     if (!res.ok) throw new Error(`Nominatim HTTP ${res.status}`);
-    const arr = (await res.json()) as any[];
-    const first = Array.isArray(arr) ? arr[0] : null;
-    const lat = Number(first?.lat);
-    const lon = Number(first?.lon);
+    const json = (await res.json()) as unknown;
+    const first = Array.isArray(json) ? (json[0] as unknown) : null;
+    const firstObj = first && typeof first === "object" ? (first as Record<string, unknown>) : null;
+    const lat = Number(firstObj?.lat);
+    const lon = Number(firstObj?.lon);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
       await GeocodeCache.create({ query: q, provider: "nominatim", ok: false });
       return null;
     }
 
     ok = true;
-    const displayName = typeof first?.display_name === "string" ? first.display_name : undefined;
+    const displayName = typeof firstObj?.display_name === "string" ? String(firstObj.display_name) : undefined;
     await GeocodeCache.create({
       query: q,
       provider: "nominatim",
       ok: true,
-      result: { lat, lon, displayName, raw: first },
+      result: { lat, lon, displayName, raw: firstObj ?? undefined },
     });
 
-    return { lat, lon, provider: "nominatim", query: q, displayName, raw: first };
+    return { lat, lon, provider: "nominatim", query: q, displayName, raw: firstObj ?? undefined };
   } catch {
     if (!ok) {
       // Cache failures too (avoid hammering).
@@ -171,6 +173,8 @@ export async function geocodeCity(city: string, country: string, options?: Optio
   const co = clean(country);
   const name = clean(options?.name);
 
+  const useGoogle = String(process.env.GOOGLE_GEOCODE_ENABLED ?? "").toLowerCase() === "true";
+
   const cities = cityVariants(city);
   if (!co || !cities.length) return null;
 
@@ -180,6 +184,10 @@ export async function geocodeCity(city: string, country: string, options?: Optio
     queries.push(`${cityVariant}, ${co}`);
 
     for (const q of queries) {
+      if (useGoogle) {
+        const g = (await geocodeViaGoogle(q)) as GoogleGeocodeResult | null;
+        if (g) return g;
+      }
       const res = await geocodeViaNominatim(q);
       if (res) return res;
     }

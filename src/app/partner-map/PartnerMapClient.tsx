@@ -510,12 +510,13 @@ export default function PartnerMapClient() {
     for (const feature of clusters) {
       const [lon, lat] = feature.geometry.coordinates;
 
-      const isCluster = Boolean((feature.properties as any)?.cluster);
+      const propsRecord = (feature.properties ?? {}) as Record<string, unknown>;
+      const isCluster = Boolean(propsRecord.cluster);
 
       if (isCluster) {
-        const props = feature.properties as any;
-        const count = props.point_count as number;
-        const clusterId = props.cluster_id as number;
+        const props = propsRecord;
+        const count = Number(props.point_count ?? 0);
+        const clusterId = Number(props.cluster_id ?? 0);
 
         const el = document.createElement("button");
         el.type = "button";
