@@ -10,7 +10,7 @@ vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => ({
     isAuthenticated: true,
     user: {
-      id: 1,
+      _id: 1,
       name: "Test Admin",
       email: "admin@example.com",
       user_level_id: 2,

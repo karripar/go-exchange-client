@@ -5,6 +5,8 @@
           "title": "FH Aachen - University of Applied Sciences",
           "country": "GERMANY",
           "link": "https://www.fh-aachen.de/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 50.775346,
             "lng": 6.083887
@@ -14,6 +16,8 @@
           "title": "Technische Universität Berlin",
           "country": "GERMANY",
           "link": "https://www.tu.berlin/en/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 52.512,
             "lng": 13.326
@@ -23,6 +27,8 @@
           "title": "KTH Royal Institute of Technology",
           "country": "SWEDEN",
           "link": "https://www.kth.se/en",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 59.347,
             "lng": 18.073
@@ -32,6 +38,8 @@
           "title": "Politecnico di Milano",
           "country": "ITALY",
           "link": "https://www.polimi.it/en",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 45.478,
             "lng": 9.227
@@ -43,6 +51,8 @@
           "title": "OsloMet – Oslo Metropolitan University",
           "country": "NORWAY",
           "link": "https://www.oslomet.no/en",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 59.941,
             "lng": 10.720
@@ -52,6 +62,8 @@
           "title": "Tallinn University of Technology (TalTech)",
           "country": "ESTONIA",
           "link": "https://taltech.ee/en",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 59.395,
             "lng": 24.665
@@ -63,6 +75,8 @@
           "title": "Kansai University",
           "country": "JAPAN",
           "link": "https://www.kansai-u.ac.jp/English/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 34.816,
             "lng": 135.522
@@ -72,6 +86,8 @@
           "title": "Seoul National University of Science and Technology",
           "country": "SOUTH KOREA",
           "link": "https://en.seoultech.ac.kr/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 37.606,
             "lng": 127.073
@@ -83,6 +99,8 @@
           "title": "University of California, Berkeley",
           "country": "USA",
           "link": "https://www.berkeley.edu/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": 37.8715,
             "lng": -122.273
@@ -92,6 +110,8 @@
           "title": "University of Sydney",
           "country": "AUSTRALIA",
           "link": "https://www.sydney.edu.au/",
+          "program": "Erasmus+",
+          "studyField": "Engineering",
           "coordinates": {
             "lat": -33.888,
             "lng": 151.187

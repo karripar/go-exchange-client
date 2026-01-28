@@ -52,12 +52,14 @@ describe("ContactPage", () => {
           _id: "1",
           name: "John Doe",
           title: "Manager",
+          campus: "Main",
           email: "john@example.com",
         },
         {
           _id: "2",
           name: "Jane Smith",
           title: "Admin",
+          campus: "North",
           email: "jane@example.com",
         },
       ],
@@ -76,6 +78,7 @@ describe("ContactPage", () => {
         _id: "3",
         name: "New Admin",
         title: "Support",
+        campus: "East",
         email: "new@admin.com",
       },
     });
@@ -94,6 +97,7 @@ describe("ContactPage", () => {
     expect(mockAddContact).toHaveBeenCalledWith({
       name: "New Admin",
       title: "Support",
+      campus: "",
       email: "new@admin.com",
     });
 
@@ -108,6 +112,7 @@ describe("ContactPage", () => {
           _id: "1",
           name: "John Doe",
           title: "Manager",
+          campus: "East",
           email: "john@example.com",
         },
       ],
