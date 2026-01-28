@@ -1,9 +1,9 @@
 import React from "react";
 
 interface ContactFormProps {
-  newContact: { name: string; title: string; email: string };
+  newContact: { name: string; title: string; campus: string; email: string };
   setNewContact: React.Dispatch<
-    React.SetStateAction<{ name: string; title: string; email: string }>
+    React.SetStateAction<{ name: string; title: string; campus: string; email: string }>
   >;
   onSubmit: (e: React.FormEvent) => void;
   loading: boolean;
@@ -40,6 +40,17 @@ const ContactForm: React.FC<ContactFormProps> = ({
       onChange={(e) => setNewContact({ ...newContact, title: e.target.value })}
       className="border border-gray-300 rounded-lg p-2"
     />
+    {/* Campus option field */}
+    <select name="campusSelect" id="campusSelect" className="border border-gray-300 rounded-lg p-2"
+      value={newContact.campus}
+      onChange={(e) => setNewContact({ ...newContact, campus: e.target.value })}
+    >
+      <option value="">{t.campus}</option>
+      <option value="Myllypuro">Myllypuro</option>
+      <option value="Arabia">Arabia</option>
+      <option value="Karamalmi">Karamalmi</option>
+      <option value="Myyrmäki">Myyrmäki</option>
+    </select>
     <input
       type="email"
       placeholder={t.email}

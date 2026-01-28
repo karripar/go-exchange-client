@@ -11,6 +11,7 @@ if (!API_URL) {
 export interface AdminContactInput {
   name: string;
   title: string;
+  campus: string;
   email: string;
 }
 
@@ -64,6 +65,15 @@ const useAdminContacts = () => {
       return;
     }
 
+    const { name, title, campus, email } = contactData;
+    
+    const normalizedContactData = {
+      name: name.trim(),
+      title: title.trim(),
+      campus: campus ? campus.trim() : "",
+      email: email.trim(),
+    };
+
     try {
       const response = await fetchData<{ success: boolean; contact: AdminContactResponse }>(
         `${API_URL}/contact/contacts`,
@@ -73,7 +83,7 @@ const useAdminContacts = () => {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
           },
-          body: JSON.stringify(contactData),
+          body: JSON.stringify(normalizedContactData),
         }
       );
 

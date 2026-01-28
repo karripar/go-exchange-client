@@ -17,7 +17,7 @@ const ContactPage: React.FC = () => {
     { _id: string; name: string; title: string; email: string, avatarUrl?: string, position?: number }[]
   >([]);
 
-  const [newContact, setNewContact] = useState({ name: "", title: "", email: "" });
+  const [newContact, setNewContact] = useState({ name: "", title: "", campus: "", email: "" });
   const [errorMessage, setErrorMessage] = useState<string | null>(null); 
   const t = translations[language] || translations.fi;
   const adminLevels = [ADMIN_LEVEL_ID, ELEVATED_LEVEL_ID];
@@ -47,7 +47,7 @@ const ContactPage: React.FC = () => {
       const res = await addContact(newContact);
       if (res?.contact) {
         setContacts((prev) => [...prev, res.contact]);
-        setNewContact({ name: "", title: "", email: "" });
+        setNewContact({ name: "", title: "", campus: "", email: "" });
       }
     } catch (err) {
       console.error("Error adding contact:", err);

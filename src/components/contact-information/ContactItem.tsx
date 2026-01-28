@@ -6,6 +6,7 @@ interface ContactItemProps {
     _id: string;
     name: string;
     title: string;
+    campus?: string;
     email: string;
     avatarUrl?: string;
     position?: number;
@@ -15,10 +16,14 @@ interface ContactItemProps {
   t: Record<string, string>;
 }
 
-const ContactItem: React.FC<ContactItemProps> = ({ contact, isAdmin, onRemove, t }) => {
+const ContactItem: React.FC<ContactItemProps> = ({
+  contact,
+  isAdmin,
+  onRemove,
+  t,
+}) => {
   return (
     <div className="flex items-center border border-gray-300 rounded-xl p-4 mb-4">
-      
       {isAdmin && typeof contact.position === "number" && (
         <div className="mr-4 text-gray-500 font-semibold text-lg w-6 text-center select-none">
           {contact.position}
@@ -26,10 +31,25 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, isAdmin, onRemove, t
       )}
 
       <div className="flex justify-between items-center w-full">
-        <div>
-          <p className="font-medium">{contact.name}</p>
-          <p className="text-sm italic text-[var(--typography)]">{contact.title}</p>
-          <a href={`mailto:${contact.email}`} className="text-blue-600 hover:underline">
+        <div className="flex flex-col gap-1">
+          <p className="font-semibold text-base leading-tight">
+            {contact.name}
+          </p>
+
+          <p className="text-sm italic text-[var(--typography)]">
+            {contact.title}
+          </p>
+
+          {contact.campus && (
+            <p className="text-sm text-[var(--typography)] opacity-80">
+              {contact.campus}
+            </p>
+          )}
+
+          <a
+            href={`mailto:${contact.email}`}
+            className="text-sm text-blue-600 hover:underline break-all"
+          >
             {contact.email}
           </a>
         </div>
@@ -56,6 +76,5 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, isAdmin, onRemove, t
     </div>
   );
 };
-
 
 export default ContactItem;
