@@ -1,0 +1,17 @@
+.va-map-popup .maplibregl-popup-content {
+  padding: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.va-map-popup .maplibregl-popup-tip {
+  border-top-color: rgba(255, 255, 255, 1);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+}
+
+.va-map-popup .va-popup-title {
+  font-family: var(--font-machina-bold);
+  letter-spacing: 0.02em;
+}
