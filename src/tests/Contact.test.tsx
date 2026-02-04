@@ -132,7 +132,7 @@ describe("ContactPage", () => {
   test("renders error message if fetching fails", async () => {
     mockGetContacts.mockRejectedValueOnce(new Error("Failed to fetch"));
 
-    // Override hook to propagate error
+    // Override hook to return error state
     vi.mock("@/hooks/contactHooks", () => ({
       useAdminContacts: () => ({
         getContacts: mockGetContacts,
