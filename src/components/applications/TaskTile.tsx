@@ -45,8 +45,6 @@ export function TaskCard({
   isExpanded, 
   onToggleExpand, 
   taskDocuments, 
-  onAddDocument, 
-  onDeleteDocument,
   onComplete,
   isCompleted,
   showReminder,
@@ -129,26 +127,14 @@ export function TaskCard({
 
           {/* Document Upload Section */}
           <div className="space-y-3 mb-6">
-            <h4 className="font-semibold text-gray-900">
-              {task.isCheckboxOnly ? (language === 'fi' ? 'Vahvista osallistuminen' : 'Confirm participation') : t.uploadDocument}
-            </h4>
+          <h3 className="text-md font-semibold text-gray-900 mb-2">
+             { language === 'en' ? 'Required Documents' : 'Tarvittavat dokumentit' }
+          </h3>
             {task.documents.map((doc, index) => (
               <div key={doc.id || doc._id || `doc-${index}`} className="bg-white border border-gray-200 rounded-lg p-4">
                 {task.isCheckboxOnly ? (
                   /* Checkbox mode for attendance confirmation */
                   <label className="flex items-center gap-3 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={!!taskDocuments[doc.id]}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          onAddDocument(task.id, doc.id, 'attended', 'checkbox');
-                        } else {
-                          onDeleteDocument(task.id, doc.id);
-                        }
-                      }}
-                      className="w-5 h-5 text-[#FF5722] border-gray-300 rounded focus:ring-[#FF5722] cursor-pointer"
-                    />
                     <div className="flex-1">
                       <span className="text-sm font-medium text-gray-900 group-hover:text-[#FF5722] transition-colors">
                         {doc.label}
@@ -164,21 +150,7 @@ export function TaskCard({
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-gray-900">{doc.label}</span>
                       </div>
-                      {taskDocuments[doc.id] ? (
-                        <button
-                          onClick={() => onDeleteDocument(task.id, doc.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FaTrash className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setActiveDocForm(activeDocForm === doc.id ? null : doc.id)}
-                          className="text-[#FF5722] hover:text-orange-700 text-sm font-medium"
-                        >
-                          {activeDocForm === doc.id ? t.cancel : `+ ${t.addDocument}`}
-                        </button>
-                      )}
+                      
                     </div>
 
                     {taskDocuments[doc.id] ? (
@@ -199,7 +171,6 @@ export function TaskCard({
                     taskId={task.id}
                     docId={doc.id}
                     onAdd={(taskId, docId, url, source) => {
-                      onAddDocument(taskId, docId, url, source);
                       setShowSavedNotification(docId);
                       setTimeout(() => setShowSavedNotification(null), 5000);
                     }}
@@ -220,29 +191,6 @@ export function TaskCard({
               </div>
             ))}
           </div>
-
-          {/* Complete Button */}
-          {!isCompleted && (
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
-                onClick={onToggleExpand}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                {language === 'fi' ? 'Sulje' : 'Close'}
-              </button>
-              <button
-                onClick={() => onComplete(task.id, task)}
-                disabled={!hasAllRequired}
-                className={`px-6 py-2 rounded-lg font-semibold ${
-                  hasAllRequired 
-                    ? `${colors.bg} text-white hover:opacity-90` 
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {t.completeTask}
-              </button>
-            </div>
-          )}
         </div>
       )}
     </div>
