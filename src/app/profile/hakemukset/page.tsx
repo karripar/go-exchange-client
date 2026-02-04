@@ -5,30 +5,14 @@ import {
   useApplicationStages,
 } from "@/hooks/applicationsHooks";
 import { useProfileData } from "@/hooks/profileHooks";
-import { useBudgetEstimate } from "@/hooks/budgetArviointiHooks";
-import { useGrantsData } from "@/hooks/grantsManagingHooks";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { TaskCard } from "@/components/applications/TaskTile";
 import { getPhaseTasks } from "@/config/phaseTasks";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import {
-  ApplicationPhase,
-} from "va-hybrid-types/contentTypes";
+import { ApplicationPhase } from "va-hybrid-types/contentTypes";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations/applications";
-
-type BudgetCategory =
-  | "matkakulut"
-  | "vakuutukset"
-  | "asuminen"
-  | "ruoka_ja_arki"
-  | "opintovalineet";
-
-interface CategoryExpense {
-  amount: number;
-  notes: string;
-}
 
 
 const getPhaseTitle = (phase: ApplicationPhase, language: string) => {
@@ -53,42 +37,27 @@ export default function HakemuksetPage() {
     error: profileError,
   } = useProfileData();
   const {
-    applications,
     loading: appsLoading,
     error: appsError,
   } = useApplicationsData();
   const {
-    stages: applicationStages,
     loading: stagesLoading,
     error: stagesError,
   } = useApplicationStages();
-  const {
-    grants,
-    loading: grantsLoading,
-    error: grantsError,
-  } = useGrantsData();
-  const { budget } = useBudgetEstimate();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
   const t = translations[language];
   const PHASE_TASKS = getPhaseTasks(language);
 
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
-  const [activeBudgetTab, setActiveBudgetTab] = useState<"stages">(
-    "stages"
-  );
-  const [budgetExpenses, setBudgetExpenses] = useState<Record<
-    BudgetCategory,
-    CategoryExpense
-  > | null>(null);
+  const [activeBudgetTab, setActiveBudgetTab] = useState<"stages">("stages");
+
 
   // Task's specific document management
   const [taskDocuments, setTaskDocuments] = useState<
     Record<string, Record<string, { url: string; source: string }>>
   >({});
   const [showReminder, setShowReminder] = useState<string | null>(null);
-
 
   // Calculate task completion based on saved documents (persists across reloads)
   const isTaskCompleted = (
@@ -111,8 +80,11 @@ export default function HakemuksetPage() {
     }
   }, [searchParams]);
 
-
- 
+  useEffect(() => {
+    if (activePhase !== "apurahat") {
+      setActiveBudgetTab("stages");
+    }
+  }, [activePhase]);
 
   const getPhaseProgress = (phase: ApplicationPhase) => {
     const tasks = PHASE_TASKS[phase];
@@ -152,7 +124,9 @@ export default function HakemuksetPage() {
       <div className="bg-white p-6 border-b">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-start mb-3 space-x-4 text-lg outline-2 p-6 bg-orange-50 border-l-4 border-[#FF5722] rounded-md">
-            <h3 className="text-gray-900 text-center flex-1">{t.description}</h3>
+            <h3 className="text-gray-900 text-center flex-1">
+              {t.description}
+            </h3>
           </div>
           <div className="text-sm text-gray-600 space-y-1 max-w-2xl mx-auto">
             <p>{t.requirement1}</p>
@@ -164,56 +138,62 @@ export default function HakemuksetPage() {
       </div>
 
       {/* Phase Navigation */}
-      <div className="bg-white border-b">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex overflow-x-auto space-x-1">
-            {(
-              [
-                "esihaku",
-                "nomination",
-                "apurahat",
-                "vaihdon_jalkeen",
-              ] as ApplicationPhase[]
-            ).map((phase) => (
-              <button
-                key={phase}
-                onClick={() => {
-                  setActivePhase(phase);
-                  if (phase !== "apurahat") {
-                    setActiveBudgetTab("stages");
-                  }
-                }}
-                className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                  activePhase === phase
+      <nav className="bg-white border-b">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative">
+            <div
+              role="tablist"
+              className="
+          flex gap-1
+          overflow-x-auto
+          px-2
+          scrollbar-none
+          -mb-px
+        "
+            >
+              {(
+                [
+                  "esihaku",
+                  "nomination",
+                  "apurahat",
+                  "vaihdon_jalkeen",
+                ] as ApplicationPhase[]
+              ).map((phase) => {
+                const isActive = activePhase === phase;
+
+                return (
+                  <button
+                    key={phase}
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActivePhase(phase)}
+                    className={`
+                shrink-0
+                px-4 py-6
+                text-sm font-medium
+                whitespace-nowrap
+                border-b-2
+                transition-colors
+                ${
+                  isActive
                     ? "border-[#FF5722] text-[#FF5722]"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {getPhaseTitle(phase, language)}
-              </button>
-            ))}
+                    : "border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300"
+                }
+              `}
+                  >
+                    {getPhaseTitle(phase, language)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto p-6">
         {activePhase === "apurahat" ? (
           <div>
-            {/* Tabs for grants and budget calculator */}
-            <div className="flex space-x-2 mb-6">
-              <button
-                className={`px-4 py-2 rounded-t-lg font-medium border-b-2 transition-colors ${
-                  activeBudgetTab === "stages"
-                    ? "border-[#FF5722] text-[#FF5722] bg-white"
-                    : "border-transparent text-gray-500 bg-gray-100"
-                }`}
-                onClick={() => setActiveBudgetTab("stages")}
-              >
-                {t.grantsTabTitle}
-              </button>
-              
-            </div>
 
             {activeBudgetTab === "stages" && (
               <div className="space-y-6">
@@ -230,16 +210,15 @@ export default function HakemuksetPage() {
                     key={task.id}
                     task={task}
                     isExpanded={expandedTask === task.id}
-                    onToggleExpand={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
+                    onToggleExpand={() =>
+                      setExpandedTask(expandedTask === task.id ? null : task.id)
+                    }
                     taskDocuments={taskDocuments[task.id] || {}}
-                    onComplete={() => { } }
                     isCompleted={isTaskCompleted(task.id, task)}
                     showReminder={showReminder === task.id}
-                    onCloseReminder={() => setShowReminder(null)} onAddDocument={function (taskId: string, docId: string, url: string, source: string): void {
-                      throw new Error("Function not implemented.");
-                    } } onDeleteDocument={function (taskId: string, docId: string): void {
-                      throw new Error("Function not implemented.");
-                    } }                  />
+                    onCloseReminder={() => setShowReminder(null)}
+                    
+                  />
                 ))}
               </div>
             )}
@@ -304,16 +283,14 @@ export default function HakemuksetPage() {
                 key={task.id}
                 task={task}
                 isExpanded={expandedTask === task.id}
-                onToggleExpand={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
+                onToggleExpand={() =>
+                  setExpandedTask(expandedTask === task.id ? null : task.id)
+                }
                 taskDocuments={taskDocuments[task.id] || {}}
-                onComplete={() => { } }
                 isCompleted={isTaskCompleted(task.id, task)}
                 showReminder={showReminder === task.id}
-                onCloseReminder={() => setShowReminder(null)} onAddDocument={function (taskId: string, docId: string, url: string, source: string): void {
-                  throw new Error("Function not implemented.");
-                } } onDeleteDocument={function (taskId: string, docId: string): void {
-                  throw new Error("Function not implemented.");
-                } }              />
+                onCloseReminder={() => setShowReminder(null)}
+              />
             ))}
           </div>
         )}

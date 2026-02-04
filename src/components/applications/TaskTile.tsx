@@ -32,9 +32,6 @@ interface TaskCardProps {
   isExpanded: boolean;
   onToggleExpand: () => void;
   taskDocuments: Record<string, { url: string; source: string }>;
-  onAddDocument: (taskId: string, docId: string, url: string, source: string) => void;
-  onDeleteDocument: (taskId: string, docId: string) => void;
-  onComplete: (taskId: string, task: TaskTile) => void;
   isCompleted: boolean;
   showReminder: boolean;
   onCloseReminder: () => void;
@@ -45,7 +42,6 @@ export function TaskCard({
   isExpanded, 
   onToggleExpand, 
   taskDocuments, 
-  onComplete,
   isCompleted,
   showReminder,
   onCloseReminder
