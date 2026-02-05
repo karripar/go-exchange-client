@@ -29,8 +29,8 @@ const translations: Record<"fi" | "en", Locale> = {
         href: "/instructions",
       },
       {
-        title: "APURAHAT",
-        description: "Katso apurahat ja mahdolliset kustannukset.",
+        title: "APURAHAT JA DOKUMENTIT",
+        description: "Katso apurahat ja tarvittavat dokumentit.",
         href: "/profile/hakemukset?tab=budget",
       },
       {
@@ -39,7 +39,7 @@ const translations: Record<"fi" | "en", Locale> = {
         href: "/destinations",
       },
       {
-        title: "AI–CHAT JA FAQ",
+        title: "AI-CHAT JA FAQ",
         description: "Kysy kysymyksiä AI:lta tai selaile usein kysyttyjä.",
         href: "/ai-chat",
       },
@@ -70,7 +70,7 @@ const translations: Record<"fi" | "en", Locale> = {
     chatButton: "CHAT",
   },
   en: {
-    heroTitle: "Welcome to the Exchange Application!",
+    heroTitle: "Welcome to the Go Exchange Application!",
     heroSubtitle:
       "Find application instructions, destinations, grants, and tips all in one place.",
     cards: [
@@ -81,8 +81,8 @@ const translations: Record<"fi" | "en", Locale> = {
         href: "/instructions",
       },
       {
-        title: "GRANTS & COSTS",
-        description: "Check out grants and potential costs.",
+        title: "GRANTS & DOCUMENTS",
+        description: "Check out grants and required documents.",
         href: "/profile/hakemukset?tab=budget",
       },
       {

@@ -37,7 +37,7 @@ const Navbar = () => {
               { href: "/destinations", label: "Vaihtokohteet" },
               {
                 href: "/profile/hakemukset?tab=budget",
-                label: "Apurahat ja kustannukset",
+                label: "Apurahat ja dokumentit",
               },
             ],
           },
@@ -65,7 +65,7 @@ const Navbar = () => {
           { href: "/destinations", label: "Vaihtokohteet" },
           {
             href: "/profile/hakemukset?tab=budget",
-            label: "Apurahat ja kustannukset",
+            label: "Apurahat ja dokumentit",
           },
           { href: "/tips", label: "Kokemukset ja vinkit" },
           { href: "/ai-chat", label: "AI Chat ja FAQ" },
@@ -88,7 +88,7 @@ const Navbar = () => {
               { href: "/destinations", label: "Destinations" },
               {
                 href: "/profile/hakemukset?tab=budget",
-                label: "Grants & Costs",
+                label: "Grants & Documents",
               },
             ],
           },
@@ -114,7 +114,7 @@ const Navbar = () => {
           { href: "/", label: "Home" },
           { href: "/instructions", label: "Application Process" },
           { href: "/destinations", label: "Destinations" },
-          { href: "/profile/hakemukset?tab=budget", label: "Grants & Costs" },
+          { href: "/profile/hakemukset?tab=budget", label: "Grants & documents" },
           { href: "/tips", label: "Experiences & Tips" },
           { href: "/ai-chat", label: "AI Chat & FAQ" },
           { href: "/contact", label: "Contact" },
