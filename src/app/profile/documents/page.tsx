@@ -5,7 +5,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import LoadingSpinner from "@/components/profile/LoadingSpinner";
 import PlatformInstructions from "@/components/profile/PlatformInstructions";
 import { FormField, SubmitButton } from "@/components/profile/FormComponents";
-import { getPlatformIcon } from "@/lib/platformUtils";
+import { Link } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FaFileAlt, FaTrash, FaExternalLinkAlt, FaLink, FaSpinner } from "react-icons/fa";
 import { Document } from "va-hybrid-types/contentTypes";
@@ -16,14 +16,6 @@ import { useRouter } from "next/navigation";
 
 // MongoDB documents include _id field
 type DocumentWithId = Document & { _id?: string };
-
-const PLATFORM_OPTIONS = [
-  { value: "google_drive", label: "Google Drive" },
-  { value: "onedrive", label: "OneDrive" },
-  { value: "dropbox", label: "Dropbox" },
-  { value: "icloud", label: "iCloud" },
-  { value: "other_url", label: "Muu URL" }
-];
 
 export default function DocumentsPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
@@ -41,7 +33,7 @@ export default function DocumentsPage() {
   const [formData, setFormData] = useState({
     name: "",
     url: "",
-    sourceType: "google_drive",
+    sourceType: "other_url",
     notes: ""
   });
 
@@ -76,7 +68,7 @@ export default function DocumentsPage() {
   }
 
   const resetForm = () => {
-    setFormData({ name: "", url: "", sourceType: "google_drive", notes: "" });
+    setFormData({ name: "", url: "", sourceType: "other_url", notes: "" });
     setShowForm(false);
   };
 
@@ -173,17 +165,7 @@ export default function DocumentsPage() {
                   <h4 className="font-medium text-gray-900 mb-4">{t.addDocumentLink}</h4>
                   
                   <div className="space-y-3">
-                    <FormField label={t.platform} required>
-                      <select
-                        value={formData.sourceType}
-                        onChange={(e) => setFormData({...formData, sourceType: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        {PLATFORM_OPTIONS.map(opt => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
-                        ))}
-                      </select>
-                    </FormField>
+                    
 
                     <FormField label={t.name} required>
                       <input
@@ -243,11 +225,13 @@ export default function DocumentsPage() {
                       className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-3 flex-1">
-                        <span className="text-2xl">{getPlatformIcon(doc.sourceType || 'other_url')}</span>
+                        <span className="text-2xl">
+                          <Link/>
+                        </span>
                         <div>
                           <p className="font-medium text-gray-800">{doc.name}</p>
                           <p className="text-xs text-gray-500">
-                            {doc.sourceType?.replace('_', ' ') || 'Dokumentti'} • {new Date(doc.addedAt).toLocaleDateString("fi-FI")}
+                            {new Date(doc.addedAt).toLocaleDateString("fi-FI")}
                           </p>
                         </div>
                       </div>

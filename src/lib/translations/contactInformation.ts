@@ -1,6 +1,6 @@
 export const translations: Record<string, Record<string, string>> = {
     en: {
-      title: "Admin Contact Information",
+      title: "International Relations Contact Information",
       addTitle: "Add New Contact",
       name: "Name",
       titleLabel: "Title / Role",
@@ -14,7 +14,7 @@ export const translations: Record<string, Record<string, string>> = {
       adminCanDrag: "Admins can drag and reorder contacts. Grab and move the contact items to change their order.",
     },
     fi: {
-      title: "Ylläpitäjien yhteystiedot",
+      title: "Kansainvälisyyspalveluiden yhteystiedot",
       addTitle: "Lisää uusi yhteystieto",
       name: "Nimi",
       titleLabel: "Titteli / Rooli",

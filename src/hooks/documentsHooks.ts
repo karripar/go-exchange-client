@@ -5,34 +5,15 @@ import { ApplicationDocument } from "va-hybrid-types/contentTypes";
 
 /**
  * Validate document link based on source type
- * More flexible validation - checks if URL is valid and optionally matches platform
+ * More flexible validation - checks if URL is valid https link
  */
-const validateDocumentLink = (url: string, sourceType: string, strict: boolean = false): boolean => {
+const validateDocumentLink = (url: string): boolean => {
   // Basic URL validation
   if (!url || typeof url !== 'string') return false;
+
+  // return true if valid https link
+  return /^https?:\/\/.+/.test(url);
   
-  // Check if it's a valid URL format
-  try {
-    new URL(url);
-  } catch {
-    // If not a full URL, check if it starts with http/https
-    if (!/^https?:\/\/.+/.test(url)) return false;
-  }
-
-  // If not strict mode, any valid URL is acceptable
-  if (!strict) return true;
-
-  // Strict mode: validate against platform patterns
-  const patterns: Record<string, RegExp> = {
-    google_drive: /drive\.google\.com/,
-    onedrive: /(1drv\.ms|onedrive\.live\.com|sharepoint\.com)/,
-    dropbox: /dropbox\.com/,
-    icloud: /icloud\.com/,
-    other_url: /^https?:\/\/.+/
-  };
-
-  const pattern = patterns[sourceType];
-  return pattern ? pattern.test(url) : true;
 };
 
 /**
@@ -86,7 +67,7 @@ const useApplicationDocuments = (phase?: string) => {
       setError(null);
 
       // Skipping validation for checkbox only tasks
-      if (data.sourceType !== 'checkbox' && !validateDocumentLink(data.fileUrl, data.sourceType, false)) {
+      if (data.sourceType !== 'checkbox' && !validateDocumentLink(data.fileUrl)) {
         throw new Error('Invalid document link format');
       }
 
@@ -232,7 +213,7 @@ const useProfileDocuments = () => {
       setError(null);
 
       // Validating the link before submission (non-strict mode)
-      if (!validateDocumentLink(data.url, data.sourceType, false)) {
+      if (!validateDocumentLink(data.url)) {
         throw new Error('Invalid document link format');
       }
 
