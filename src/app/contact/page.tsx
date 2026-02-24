@@ -29,7 +29,7 @@ const ContactPage: React.FC = () => {
     const fetchContacts = async () => {
       try {
         const res = await getContacts();
-        console.log("Fetched contacts:", res);
+        //console.log("Fetched contacts:", res);
         if (res && "contacts" in res) setContacts(res.contacts);
       } catch (err) {
         console.error("Error loading contacts:", err);
