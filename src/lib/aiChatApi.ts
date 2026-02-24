@@ -19,6 +19,64 @@ export interface StreamChunk {
   error?: string;
 }
 
+export function handleSSEDataLine(
+  data: string,
+  onChunk: (chunk: StreamChunk) => void,
+  onComplete: () => void
+): boolean {
+  console.log('[SSE DEBUG] Raw data:', data);
+
+  if (data === '[DONE]') {
+    onComplete();
+    return true;
+  }
+
+  try {
+    const parsed = JSON.parse(data);
+    console.log('[SSE DEBUG] Parsed event:', parsed);
+
+    // The backend wraps events in { event: type, data: actualData }
+    const eventType = parsed.event || parsed.type;
+    const eventData = parsed.data || parsed;
+
+    // Handle different event types
+    if (eventType === 'response.output_text.delta') {
+      onChunk({
+        type: 'text',
+        content: eventData.delta || '',
+      });
+    } else if (eventType === 'response.output_text.done') {
+      // Text output complete
+      onChunk({ type: 'done' });
+    } else if (eventType === 'rate_limit_error') {
+      onChunk({
+        type: 'error',
+        error: eventData.error?.message || 'Liikaa pyyntöjä',
+      });
+    } else if (eventType === 'error') {
+      onChunk({
+        type: 'error',
+        error: eventData.error?.message || 'Virhe vastauksen käsittelyssä',
+      });
+    } else if (eventType?.includes('tool_call')) {
+      // Tool call events (file search, etc.)
+      const toolType = eventType.split('.')[1]; // e.g., 'file_search_call'
+      onChunk({
+        type: 'tool_call',
+        tool: {
+          type: toolType,
+          name: eventData.name,
+          status: eventType.includes('done') ? 'completed' : 'in_progress',
+        },
+      });
+    }
+  } catch (parseError) {
+    console.error('Error parsing SSE data:', parseError);
+  }
+
+  return false;
+}
+
 /**
  * Send a message to the AI and get a streaming response
  */
@@ -93,58 +151,9 @@ export async function sendChatMessage(
         if (!line.trim() || !line.startsWith('data: ')) continue;
 
         const data = line.slice(6); // Remove 'data: ' prefix
-
-        console.log('[SSE DEBUG] Raw data:', data);
-
-        if (data === '[DONE]') {
-          onComplete();
+        const didComplete = handleSSEDataLine(data, onChunk, onComplete);
+        if (didComplete) {
           return;
-        }
-
-        try {
-          const parsed = JSON.parse(data);
-          console.log('[SSE DEBUG] Parsed event:', parsed);
-
-          // The backend wraps events in { event: type, data: actualData }
-          const eventType = parsed.event || parsed.type;
-          const eventData = parsed.data || parsed;
-
-          // Handle different event types
-          if (eventType === 'response.output_text.delta') {
-            onChunk({
-              type: 'text',
-              content: eventData.delta || '',
-            });
-          } else if (eventType === 'response.output_text.done') {
-            // Text output complete
-            onChunk({ type: 'done' });
-          } else if (eventType === 'rate_limit_error') {
-            onChunk({
-              type: 'error',
-              error: eventData.error?.message || 'Liikaa pyyntöjä',
-            });
-          } else if (eventType === 'error') {
-            onChunk({
-              type: 'error',
-              error:
-                eventData.error?.message || 'Virhe vastauksen käsittelyssä',
-            });
-          } else if (eventType?.includes('tool_call')) {
-            // Tool call events (file search, etc.)
-            const toolType = eventType.split('.')[1]; // e.g., 'file_search_call'
-            onChunk({
-              type: 'tool_call',
-              tool: {
-                type: toolType,
-                name: eventData.name,
-                status: eventType.includes('done')
-                  ? 'completed'
-                  : 'in_progress',
-              },
-            });
-          }
-        } catch (parseError) {
-          console.error('Error parsing SSE data:', parseError);
         }
       }
     }
