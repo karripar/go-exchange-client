@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import withPWA from "next-pwa";
+
 
 const nextConfig: NextConfig = {
   images: {
@@ -15,9 +15,7 @@ const nextConfig: NextConfig = {
   },
   trailingSlash: false,
   async rewrites() {
-    return [
-      { source: "/vaihtokohteet", destination: "/destinations" },
-    ];
+    return [{ source: "/vaihtokohteet", destination: "/destinations" }];
   },
   async headers() {
     return [
@@ -29,13 +27,9 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
-      // remove custom /sw.js headers for now
     ];
   },
 };
 
-export default withPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-})(nextConfig);
+export default nextConfig;
+

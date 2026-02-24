@@ -23,7 +23,6 @@
     "maplibre-gl": "^5.16.0",
     "mongoose": "^9.1.5",
     "next": "^16.0.3",
-    "next-pwa": "^0.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
