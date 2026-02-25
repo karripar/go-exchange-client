@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 type Favorite = {
   destination: string;
   url: string;
+  _id: string;
 };
 
 export const useFavorites = () => {
@@ -21,9 +22,10 @@ export const useFavorites = () => {
   useEffect(() => {
     if (Array.isArray(user?.favorites)) {
       setFavorites(
-        user.favorites.map((fav: { destination: string; url: string }) => ({
+        user.favorites.map((fav: { destination: string; url: string; _id: string }) => ({
           destination: fav.destination,
           url: fav.url,
+          _id: fav._id
         }))
       );
     }

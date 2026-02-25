@@ -64,7 +64,7 @@ export default function FavoritesPage() {
             <div className="space-y-3 px-4">
               {favorites.map((favorite) => (
                 <div
-                  key={favorite.destination}
+                  key={favorite._id}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg hover:shadow-md transition-shadow"
                   style={{
                     backgroundColor: "var(--va-card)",

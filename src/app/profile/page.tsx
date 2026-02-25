@@ -36,6 +36,8 @@ export default function ProfilePage() {
     );
   }
 
+  console.log("Profile favorites", profile.favorites);
+
   // Rendering profile data
   return (
     <div className="min-h-screen relative">
