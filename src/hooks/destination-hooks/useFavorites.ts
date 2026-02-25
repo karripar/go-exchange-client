@@ -5,16 +5,27 @@ import { useAuth } from "@/hooks/useAuth";
 /**
  * manage user's favorite destinations
  */
+
+type Favorite = {
+  destination: string;
+  url: string;
+};
+
 export const useFavorites = () => {
   const { user, updateUser } = useAuth();
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // get the users favorites from their profile
   useEffect(() => {
-    if (user?.favorites) {
-      setFavorites(user.favorites);
+    if (Array.isArray(user?.favorites)) {
+      setFavorites(
+        user.favorites.map((fav: { destination: string; url: string }) => ({
+          destination: fav.destination,
+          url: fav.url,
+        }))
+      );
     }
   }, [user?.favorites]);
 
@@ -22,15 +33,22 @@ export const useFavorites = () => {
    * Add a destination to favorites
    */
   const addFavorite = useCallback(
-    async (destination: string): Promise<boolean> => {
+    async (destination: string, url: string): Promise<boolean> => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
         setError("Not authenticated");
         return false;
       }
 
+      const body = {
+        destination,
+        url,
+      };
+
       setLoading(true);
       setError(null);
+
+      console.log("Adding favorite:", body);
 
       try {
         const response = await fetch(
@@ -41,7 +59,7 @@ export const useFavorites = () => {
               Authorization: `Bearer ${authToken}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ destination }),
+            body: JSON.stringify(body),
           }
         );
 
@@ -50,7 +68,16 @@ export const useFavorites = () => {
         }
 
         const updatedUser = await response.json();
-        setFavorites(updatedUser.favorites || []);
+        setFavorites(
+          Array.isArray(updatedUser.favorites)
+            ? updatedUser.favorites.map(
+                (fav: { destination: string; url: string }) => ({
+                  destination: fav.destination,
+                  url: fav.url,
+                })
+              )
+            : []
+        );
 
         // update user profile
         if (updateUser) {
@@ -73,7 +100,7 @@ export const useFavorites = () => {
    * Remove a destination from favorites
    */
   const removeFavorite = useCallback(
-    async (destination: string): Promise<boolean> => {
+    async (destination: string, url: string): Promise<boolean> => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
         setError("Not authenticated");
@@ -82,6 +109,11 @@ export const useFavorites = () => {
 
       setLoading(true);
       setError(null);
+
+      const body = {
+        destination,
+        url,
+      };
 
       try {
         const response = await fetch(
@@ -92,7 +124,7 @@ export const useFavorites = () => {
               Authorization: `Bearer ${authToken}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ destination }),
+            body: JSON.stringify(body),
           }
         );
 
@@ -101,7 +133,16 @@ export const useFavorites = () => {
         }
 
         const updatedUser = await response.json();
-        setFavorites(updatedUser.favorites || []);
+        setFavorites(
+          Array.isArray(updatedUser.favorites)
+            ? updatedUser.favorites.map(
+                (fav: { destination: string; url: string }) => ({
+                  destination: fav.destination,
+                  url: fav.url,
+                })
+              )
+            : []
+        );
 
         if (updateUser) {
           updateUser(updatedUser);
@@ -123,11 +164,13 @@ export const useFavorites = () => {
    * toggle favorite status
    */
   const toggleFavorite = useCallback(
-    async (destination: string): Promise<boolean> => {
-      const isFavorite = favorites.includes(destination);
+    async (destination: string, url: string): Promise<boolean> => {
+      const isFavorite = favorites.some(
+        (fav) => fav.destination === destination && fav.url === url
+      );
       return isFavorite
-        ? await removeFavorite(destination)
-        : await addFavorite(destination);
+        ? await removeFavorite(destination, url)
+        : await addFavorite(destination, url);
     },
     [favorites, addFavorite, removeFavorite]
   );
@@ -136,8 +179,13 @@ export const useFavorites = () => {
    * check if destination is in favorites
    */
   const isFavorite = useCallback(
-    (destination: string): boolean => {
-      return favorites.includes(destination);
+    (destination: string, url?: string): boolean => {
+      return favorites.some((fav) => {
+        if (url !== undefined) {
+          return fav.destination === destination && fav.url === url;
+        }
+        return fav.destination === destination;
+      });
     },
     [favorites]
   );

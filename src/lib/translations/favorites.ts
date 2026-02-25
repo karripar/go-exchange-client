@@ -5,6 +5,7 @@ export const translations: Record<string, Record<string, string>> = {
     remove: "Remove",
     errorRemoving: "Error removing",
     browseMore: "Browse more destinations",
+    view: "Visit page",
   },
   fi: {
     title: "Suosikkikohteet",
@@ -12,5 +13,6 @@ export const translations: Record<string, Record<string, string>> = {
     remove: "Poista",
     errorRemoving: "Virhe poistossa",
     browseMore: "Selaa lisää kohteita",
+    view: "Vieraile sivulla",
   },
 };

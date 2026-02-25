@@ -73,8 +73,11 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
     universities
       .filter((uni) => {
         // Favorites filter
-        if (showFavoritesOnly && favorites?.length) {
-          if (!favorites.includes(uni.title)) return false;
+        if (showFavoritesOnly) {
+          const isFav = favorites.some(
+            (fav) => fav.destination === uni.title && fav.url === uni.link
+          );
+          if (!isFav) return false;
         }
 
         // Country filter
@@ -240,7 +243,7 @@ const DestinationMap: React.FC<DestinationMapProps> = ({ data }) => {
                         </a>
                       )}
 
-                      <FavoriteButton destinationName={uni.title} />
+                      <FavoriteButton destinationName={uni.title} url={uni.link} />
                     </section>
                   </li>
                 ))}

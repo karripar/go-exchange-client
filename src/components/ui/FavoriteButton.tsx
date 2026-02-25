@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 interface FavoriteButtonProps {
   destinationName: string;
+  url: string;
   className?: string;
 }
 
@@ -15,6 +16,7 @@ interface FavoriteButtonProps {
  */
 export default function FavoriteButton({
   destinationName,
+  url,
   className = "",
 }: FavoriteButtonProps) {
   const { isAuthenticated } = useAuth();
@@ -34,7 +36,7 @@ export default function FavoriteButton({
     }
 
     setIsAnimating(true);
-    await toggleFavorite(destinationName);
+    await toggleFavorite(destinationName, url);
 
     setTimeout(() => setIsAnimating(false), 300);
   };

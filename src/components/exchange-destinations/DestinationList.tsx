@@ -151,7 +151,7 @@ const DestinationList: React.FC<DestinationListProps> = ({ data }) => {
                           </div>
 
                           <div className="mt-2 sm:mt-0 sm:ml-3 flex-shrink-0">
-                            <FavoriteButton destinationName={uni.title} />
+                            <FavoriteButton destinationName={uni.title} url={uni.link} />
                           </div>
                         </div>
                       </li>

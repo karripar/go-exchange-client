@@ -17,13 +17,14 @@ export default function FavoritesPage() {
     removeFavorite,
     loading: favoritesLoading,
   } = useFavorites();
+
   const [removing, setRemoving] = useState<string | null>(null);
 
   const isLoading = favoritesLoading;
 
-  const handleRemoveFavorite = async (destination: string) => {
+  const handleRemoveFavorite = async (destination: string, url: string) => {
     setRemoving(destination);
-    const success = await removeFavorite(destination);
+    const success = await removeFavorite(destination, url);
     if (!success) {
       alert(t.errorRemoving);
     }
@@ -61,36 +62,65 @@ export default function FavoritesPage() {
             </div>
           ) : (
             <div className="space-y-3 px-4">
-              {favorites.map((destination) => (
+              {favorites.map((favorite) => (
                 <div
-                  key={destination}
-                  className="flex items-center justify-between p-4 rounded-lg hover:shadow-md transition-shadow"
+                  key={favorite.destination}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg hover:shadow-md transition-shadow"
                   style={{
                     backgroundColor: "var(--va-card)",
                     border: "1px solid var(--va-border)",
                   }}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
                     <span
-                      className="font-medium"
+                      className="block font-medium truncate sm:whitespace-normal"
                       style={{
                         color: "var(--typography)",
                         fontFamily: "var(--font-montreal-mono-medium)",
                       }}
+                      title={favorite.destination}
                     >
-                      {destination}
+                      {favorite.destination}
                     </span>
                   </div>
-                  <button
-                    onClick={() => handleRemoveFavorite(destination)}
-                    disabled={removing === destination}
-                    className="p-2 rounded-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 focus-ring"
-                    style={{
-                      color: "var(--va-dark-grey)",
-                    }}
-                  >
-                    <FaTrash />
-                  </button>
+
+                  <div className="flex items-center justify-end gap-2 sm:gap-3 flex-shrink-0">
+                    <a
+                      href={favorite.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center rounded-full border text-xs px-3 py-1 font-medium transition-colors duration-200"
+                      style={{
+                        borderColor: "var(--va-orange)",
+                        color: "var(--va-orange)",
+                        fontFamily: "var(--font-montreal-mono-medium)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--va-orange)";
+                        e.currentTarget.style.color = "var(--background)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "var(--va-orange)";
+                      }}
+                    >
+                      {t.view}
+                    </a>
+
+                    <button
+                      onClick={() =>
+                        handleRemoveFavorite(favorite.destination, favorite.url)
+                      }
+                      disabled={removing === favorite.destination}
+                      className="p-2 rounded-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 focus-ring"
+                      style={{
+                        color: "var(--va-dark-grey)",
+                      }}
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

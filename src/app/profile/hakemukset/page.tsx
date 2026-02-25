@@ -37,10 +37,6 @@ export default function HakemuksetPage() {
     error: profileError,
   } = useProfileData();
   const {
-    loading: appsLoading,
-    error: appsError,
-  } = useApplicationsData();
-  const {
     loading: stagesLoading,
     error: stagesError,
   } = useApplicationStages();
@@ -92,7 +88,7 @@ export default function HakemuksetPage() {
     return tasks.length > 0 ? (completedTasks.length / tasks.length) * 100 : 0;
   };
 
-  if (profileLoading || appsLoading || stagesLoading) {
+  if (profileLoading || stagesLoading) {
     return (
       <div className="flex flex-col items-center p-4 mt-8">
         <p>{t.loading}</p>
@@ -100,11 +96,11 @@ export default function HakemuksetPage() {
     );
   }
 
-  if (profileError || appsError || stagesError) {
+  if (profileError || stagesError) {
     return (
       <div className="flex flex-col items-center p-4 mt-8">
         <p className="text-red-500">
-          {t.error} {profileError || appsError || stagesError}
+          {t.error} {profileError || stagesError}
         </p>
         <button
           onClick={() => window.location.reload()}

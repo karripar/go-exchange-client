@@ -11,7 +11,6 @@ import {
 } from "react-icons/fa";
 import ProgressStep from "@/components/applications/ProgressStep";
 import DocumentUpload from "@/components/applications/DocumentUpload";
-import { useApplicationsData } from "@/hooks/applicationsHooks";
 import {ApplicationPhase, ApplicationStatus} from "va-hybrid-types/contentTypes";
 
 
@@ -22,11 +21,7 @@ export default function HakemuksetOverviewPage() {
     loading: profileLoading,
     error: profileError,
   } = useProfileData();
-  const {
-    applications,
-    loading: appsLoading,
-    error: appsError,
-  } = useApplicationsData();
+  
   const router = useRouter();
 
   const [activePhase, setActivePhase] = useState<ApplicationPhase>("esihaku");
@@ -37,8 +32,6 @@ export default function HakemuksetOverviewPage() {
       phase: "esihaku" as ApplicationPhase,
       title: "Esihaku",
       description: "Sisäinen haku omassa korkeakoulussa",
-      status:
-        applications?.esihaku?.status || ("not_started" as ApplicationStatus),
       completedTasks: 2,
       totalTasks: 4,
       tasks: [
@@ -58,9 +51,6 @@ export default function HakemuksetOverviewPage() {
       phase: "nomination" as ApplicationPhase,
       title: "Nomination",
       description: "Kotikorkeakoulu nominoi sinut kohdeyliopistoon",
-      status:
-        applications?.nomination?.status ||
-        ("not_started" as ApplicationStatus),
       completedTasks: 0,
       totalTasks: 3,
       tasks: [
@@ -84,9 +74,6 @@ export default function HakemuksetOverviewPage() {
       phase: "apurahat" as ApplicationPhase,
       title: "Apurahat ja tuet",
       description: "Hae Erasmus+ ja Kela-tukia",
-      status:
-        applications?.grants?.erasmus?.status ||
-        ("not_started" as ApplicationStatus),
       completedTasks: 0,
       totalTasks: 2,
       tasks: [
@@ -111,9 +98,6 @@ export default function HakemuksetOverviewPage() {
       phase: "vaihdon_jalkeen" as ApplicationPhase,
       title: "Vaihdon jälkeiset tehtävät",
       description: "Opintojen hyväksiluku ja loppuraportti",
-      status:
-        applications?.postExchange?.status ||
-        ("not_started" as ApplicationStatus),
       completedTasks: 0,
       totalTasks: 3,
       tasks: [
@@ -134,7 +118,7 @@ export default function HakemuksetOverviewPage() {
       applicationPhases.length) *
     100;
 
-  if (profileLoading || appsLoading) {
+  if (profileLoading) {
     return (
       <div className="flex flex-col items-center p-4 mt-8">
         <p>Ladataan hakemuksia...</p>
@@ -142,10 +126,10 @@ export default function HakemuksetOverviewPage() {
     );
   }
 
-  if (profileError || appsError) {
+  if (profileError) {
     return (
       <div className="flex flex-col items-center p-4 mt-8">
-        <p className="text-red-500">Virhe: {profileError || appsError}</p>
+        <p className="text-red-500">Virhe: {profileError}</p>
         <button
           onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -191,19 +175,7 @@ export default function HakemuksetOverviewPage() {
                 Vaihdon vaiheet
               </h3>
               <div className="space-y-2">
-                {applicationPhases.map((phase) => (
-                  <ProgressStep
-                    key={phase.phase}
-                    phase={phase.phase}
-                    status={phase.status}
-                    title={phase.title}
-                    description={phase.description}
-                    isActive={activePhase === phase.phase}
-                    onClick={() => setActivePhase(phase.phase)}
-                    completedTasks={phase.completedTasks}
-                    totalTasks={phase.totalTasks}
-                  />
-                ))}
+                
               </div>
             </div>
           </div>
