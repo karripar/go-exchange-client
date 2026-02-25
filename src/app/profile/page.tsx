@@ -86,7 +86,7 @@ export default function ProfilePage() {
             >
               <div className="flex justify-between items-center text-[var(--typography)]">
                 <span className="font-medium">
-                  {t.favorites} ({profile.favorites?.length || 0})
+                  {t.favorites} ({profile.favorites ? Object.keys(profile.favorites).length : 0})
                 </span>
                 <span>›</span>
               </div>
