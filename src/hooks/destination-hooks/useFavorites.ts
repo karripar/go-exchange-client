@@ -21,13 +21,37 @@ export const useFavorites = () => {
   // get the users favorites from their profile
   useEffect(() => {
     if (Array.isArray(user?.favorites)) {
-      setFavorites(
-        user.favorites.map((fav: { destination: string; url: string; _id: string }) => ({
-          destination: fav.destination,
-          url: fav.url,
-          _id: fav._id
-        }))
-      );
+      const rawFavorites = user.favorites as unknown[];
+
+      const normalizedFavorites: Favorite[] = rawFavorites
+        .map((fav) => {
+          if (
+            fav &&
+            typeof fav === "object" &&
+            "destination" in fav &&
+            "url" in fav
+          ) {
+            const { destination, url, _id } = fav as {
+              destination?: unknown;
+              url?: unknown;
+              _id?: unknown;
+            };
+
+            if (typeof destination === "string" && typeof url === "string") {
+              return {
+                destination,
+                url,
+                _id: typeof _id === "string" ? _id : "",
+              };
+            }
+          }
+          return null;
+        })
+        .filter((fav): fav is Favorite => fav !== null);
+
+      setFavorites(normalizedFavorites);
+    } else {
+      setFavorites([]);
     }
   }, [user?.favorites]);
 
