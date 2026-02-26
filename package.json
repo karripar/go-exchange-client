@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "export": "next export",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:chat:stream": "vitest run src/tests/aiChatApi.sse.test.ts src/tests/AIChatPage.progressive.test.tsx"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.0.2",

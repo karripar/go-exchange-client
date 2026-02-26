@@ -88,18 +88,19 @@ export async function sendChatMessage(
 ): Promise<void> {
   const apiUrl =
     process.env.NEXT_PUBLIC_CHAT_API || 'http://localhost:3001/api/v1/ai/chat';
+  const useV2 = process.env.NEXT_PUBLIC_CHAT_USE_V2 === '1';
 
-  try {
-    const response = await fetch(`${apiUrl}/turn`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
+  const mappedMessages = messages.map((msg) => ({
+    role: msg.role,
+    content: msg.content,
+  }));
+
+  const requestBody = useV2
+    ? {
+        messages: mappedMessages,
+      }
+    : {
+        messages: mappedMessages,
         toolsState: {
           fileSearchEnabled: true,
           webSearchEnabled: true,
@@ -113,7 +114,15 @@ export async function sendChatMessage(
               }
             : undefined,
         },
-      }),
+      };
+
+  try {
+    const response = await fetch(`${apiUrl}/turn`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
