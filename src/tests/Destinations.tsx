@@ -2,6 +2,8 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, test, beforeEach, expect } from "vitest";
 import React, { Suspense } from "react";
 
+// this test file was disabled as the map is being replaced with MapLibre and the current tests are not compatible with the new implementation. The tests will be rewritten after the map component is updated.
+
 vi.setConfig({ testTimeout: 10000 });
 
 const mockUseDestinationData = vi.fn();
